@@ -52,8 +52,8 @@ function roomCodeGenerator(){
 function createGame(){
     let game = {
         roomCode : roomCodeGenerator() , 
-        BallA : -1,
-        BallB : -1,
+        ballA : -1,
+        ballB : -1,
         count : 0 , 
         scount : 0
     };
@@ -128,6 +128,32 @@ io.on( 'connect' ,
                 }
             }
         );
+
+        socket.on(
+            "ball" , 
+            ({team,value,roomCode}) => {
+                console.log(`${roomCode + ' : ' + team} played value ${value}`);
+                let game = getGame(roomCode);
+                if(team == 'A'){
+                    // if player already made the move, then return
+                    if(game.ballA != -1) return;
+                    game.ballA = value;
+                } else {
+                    if(game.ballB != -1) return;
+                    game.ballB = value;
+                }
+                if(game.ballA == -1 || game.ballB == -1) return;
+                //if both players made their moves
+                io.to(roomCode).emit("play" , {
+                    ballA : game.ballA , 
+                    ballB : game.ballB
+                });
+                //resetting
+                game.ballA = -1;
+                game.ballB = -1;
+            }
+        )
+
         socket.on(
             "disconnect" ,
             ()=>{
