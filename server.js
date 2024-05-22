@@ -54,7 +54,8 @@ function createGame(){
         roomCode : roomCodeGenerator() , 
         BallA : -1,
         BallB : -1,
-        count : 0
+        count : 0 , 
+        scount : 0
     };
     games.push(game);
     return game;
@@ -114,16 +115,24 @@ io.on( 'connect' ,
         console.log("connect ayyaadu");
         socket.on(
             "init" , 
-            (data) =>{
+            (data , cb) =>{
                 console.log(data);
                 socket.join(data.roomCode);
                 console.log("joined the client to room "+ data.roomCode);
                 io.to(data.roomCode).emit("hey");
+                let room = getGame(data.roomCode);
+                if(room){
+                    if(room.scount%2) cb('A');
+                    else cb('B');
+                    room.scount++;
+                }
             }
         );
         socket.on(
             "disconnect" ,
-            ()=>console.log('disconnected')
+            ()=>{
+                console.log('disconnected');
+            }
         )
     }
 );
