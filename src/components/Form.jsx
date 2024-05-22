@@ -23,9 +23,9 @@ export default function Form(){
                         }
                     }  
             );
-            navigate("/game/"+roomCode);
+            navigate("/game/"+response.data.roomCode);
         }catch(err){
-            console.log(err);
+            alert(err.response.data.message);
         }
     }
 
