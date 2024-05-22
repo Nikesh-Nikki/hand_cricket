@@ -15,7 +15,13 @@ const io = new Server(
         app.listen(
             port , 
             () => console.log('server started')
-        )
+        ) , 
+        {
+            cors : {
+                origin : "*" , 
+                methods : ["GET","POST"]
+            }
+        }
 );
 
 function getGame(roomCode){
@@ -105,6 +111,19 @@ app.post("/init" ,
 
 io.on( 'connect' ,
     (socket)=>{
-        
+        console.log("connect ayyaadu");
+        socket.on(
+            "init" , 
+            (data) =>{
+                console.log(data);
+                socket.join(data.roomCode);
+                console.log("joined the client to room "+ data.roomCode);
+                io.to(data.roomCode).emit("hey");
+            }
+        );
+        socket.on(
+            "disconnect" ,
+            ()=>console.log('disconnected')
+        )
     }
 );

@@ -8,7 +8,7 @@ const routes = [
       element: < Form />,
     },
     {
-      path: "/game/:code",
+      path: "/game/:roomCode",
       element: <Game />,
     },
 ];
