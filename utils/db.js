@@ -42,6 +42,13 @@ async function insert(username , password_hash, session_token, expiry_time){
         )
 }
 
+async function insertToken(username,token,expiry_time) {
+    await this.db.run(
+        "update user set (session_token,session_expiry_time) = (?,?) where username = ?" , 
+        token , expiry_time , username
+    )
+}
+
 async function getByToken(session_token){
     const res = await this.db.get(
         "Select * from user where session_token = ?;"
@@ -63,5 +70,6 @@ export default {
     logall , 
     insert , 
     getByToken ,
-    getByUsername
+    getByUsername,
+    insertToken
 };  

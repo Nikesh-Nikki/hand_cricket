@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import db from "./utils/db.js"
+import bcrypt from "bcrypt";
+import uniqid from "uniqid"
 
 dotenv.config(); // for process.env
 await db.init();
@@ -123,25 +125,49 @@ app.post("/init" ,
 );
 
 app.get("/auth" , async (req,res) => {
-    res.status(401).send(
-        {
-            message : "user not authorized"
-        }
-    )
-    // const sessionToken = req.cookies.sessionToken
-    // if(sessionToken === undefined){
-    // } else {
-    //     const user = await db.getByToken(sessionToken);
-    //     console.log(user);
-    //     res.sendStatus(200)
-    // }
+    const sessionToken = req.cookies.sessionToken
+    if(sessionToken === undefined){
+        res.status(401).send(
+            {
+                message : "user not authorized"
+            }
+        )
+    } else {
+        const user = await db.getByToken(sessionToken);
+        console.log(user)
+        if(user) res.sendStatus(200)
+        else res.sendStatus(401)
+    }
+})
+
+app.post("/login" , async (req,res)=>{
+    const {username ,password} = req.body
+    const user = await db.getByUsername(username)
+    console.log(user)
+    if(await bcrypt.compare(password,user.pwd_hash)){
+        console.log("access granted")
+        const session_token = uniqid.process()
+        res.cookie("sessionToken",session_token)
+        res.sendStatus(200)
+        let d = new Date()
+        d.setDate(d.getDate()+1)
+        await db.insertToken(username,session_token,d.toISOString())
+    } else {
+        res.status(401).send(
+            {
+                message : "invalid credentials"
+            }
+        )
+    }
 })
 
 app.post( "/create_account" , async (req,res)=>{
     console.log(req.body)
     const {username , password} = req.body;
+    const hash = await bcrypt.hash(password,0)
+    console.log(hash)
     try {
-        await db.insert(username,password,'null','null')
+        await db.insert(username,hash,'null','null')
         res.sendStatus(200)
     } catch(err){
         console.log("catch blockk")

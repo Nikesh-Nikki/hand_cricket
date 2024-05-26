@@ -57,7 +57,6 @@ export default function CreateAccount(){
             )
         }
     }
-    console.log(state)
     return (
         <>
             {
