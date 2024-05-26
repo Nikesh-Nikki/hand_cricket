@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function Form(){
+export default function RoomCodeForm(){
     
     const [roomCode,setRoomCode] = useState('');
     const navigate = useNavigate();

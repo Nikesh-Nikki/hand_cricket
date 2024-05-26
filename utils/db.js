@@ -36,10 +36,10 @@ async function logall(){
 }
 
 async function insert(username , password_hash, session_token, expiry_time){
-    await this.db.run(
-        "insert into user values(?,?,?,?)"
-        , username , password_hash , session_token , expiry_time
-    )
+        await this.db.run(
+            "insert into user values(?,?,?,?)"
+            , username , password_hash , session_token , expiry_time
+        )
 }
 
 async function getByToken(session_token){

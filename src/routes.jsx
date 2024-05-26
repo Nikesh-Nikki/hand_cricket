@@ -1,16 +1,21 @@
 import React from "react";
-import Form from "./components/Form.jsx";
-import Game from "./components/Game.jsx";
+import Home from "./components/Home.jsx"
+import Game from "./components/Game.jsx"
+import CreateAccount from "./CreateAccount.jsx";
 
 const routes = [
     {
       path: "/",
-      element: < Form />,
+      element: < Home />,
     },
     {
       path: "/game/:roomCode",
       element: <Game />,
     },
+    {
+      path : "/create_account" , 
+      element : <CreateAccount />
+    }
 ];
 
 export default routes;

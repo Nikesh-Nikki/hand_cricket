@@ -2,12 +2,24 @@ import express from "express";
 import { Server } from "socket.io";
 import cors from "cors";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import db from "./utils/db.js"
+
+dotenv.config(); // for process.env
+await db.init();
 
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(cors(
+    {
+        origin : process.env.REACT_URL , 
+        credentials : true
+    }
+));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 let games = [];
 
@@ -69,8 +81,8 @@ function joinGame(roomCode){
 app.post("/init" , 
     (req,res)=>{
         console.log(req.body);
-        const roomCode = req.body.data.roomCode;
-        if(roomCode.length === 0){
+        const roomCode = req.body.data?.roomCode;
+        if(roomCode == undefined || roomCode.length === 0){
             // NO room code is given. so new room is created.
             console.log("new game is being created");
             const game = createGame();
@@ -109,6 +121,37 @@ app.post("/init" ,
         }
     }
 );
+
+app.get("/auth" , async (req,res) => {
+    res.status(401).send(
+        {
+            message : "user not authorized"
+        }
+    )
+    // const sessionToken = req.cookies.sessionToken
+    // if(sessionToken === undefined){
+    // } else {
+    //     const user = await db.getByToken(sessionToken);
+    //     console.log(user);
+    //     res.sendStatus(200)
+    // }
+})
+
+app.post( "/create_account" , async (req,res)=>{
+    console.log(req.body)
+    const {username , password} = req.body;
+    try {
+        await db.insert(username,password,'null','null')
+        res.sendStatus(200)
+    } catch(err){
+        console.log("catch blockk")
+        res.status(409).send(
+            {
+                message : "username already exists"
+            }
+        )
+    }
+})
 
 io.on( 'connect' ,
     (socket)=>{
