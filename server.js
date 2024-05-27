@@ -7,9 +7,11 @@ import cookieParser from "cookie-parser";
 import db from "./utils/db.js"
 import bcrypt from "bcrypt";
 import uniqid from "uniqid"
+import authenticator from "./utils/auth.js";
 
 dotenv.config(); // for process.env
 await db.init();
+const auth = new authenticator(db)
 
 const app = express();
 const port = 3000;
@@ -124,19 +126,15 @@ app.post("/init" ,
     }
 );
 
-app.get("/auth" , async (req,res) => {
-    const sessionToken = req.cookies.sessionToken
-    if(sessionToken === undefined){
+app.get("/auth", auth.sessionAuth , async (req,res) => {
+    if(req.isAuth) {
+        res.sendStatus(200)
+    } else {
         res.status(401).send(
             {
-                message : "user not authorized"
+                message : "user not authenticated"
             }
         )
-    } else {
-        const user = await db.getByToken(sessionToken);
-        console.log(user)
-        if(user) res.sendStatus(200)
-        else res.sendStatus(401)
     }
 })
 

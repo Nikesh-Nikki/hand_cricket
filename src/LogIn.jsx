@@ -22,7 +22,7 @@ export default function LogIn(){
                     password : state.password
                 }
             )
-            if(response.status == 200) navigate("/")
+            if(response.status == 200) window.location.reload()
             else { 
                 setState({
                     username : "" , 
