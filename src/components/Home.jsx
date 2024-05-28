@@ -2,7 +2,7 @@ import React from "react";
 import RoomCodeForm from "./RoomCodeForm.jsx";
 import { useEffect } from "react";
 import { useState } from "react";
-import LogIn from "../LogIn.jsx";
+import LogIn from "./LogIn.jsx";
 import axios from "axios";
 
 axios.defaults.withCredentials = true
