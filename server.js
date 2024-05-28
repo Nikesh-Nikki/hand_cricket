@@ -34,7 +34,7 @@ const io = new Server(
         ) , 
         {
             cors : {
-                origin : "*" , 
+                origin : process.env.REACT_URL , 
                 methods : ["GET","POST"]
             }
         }
