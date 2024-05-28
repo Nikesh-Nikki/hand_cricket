@@ -165,7 +165,7 @@ app.post( "/create_account" , async (req,res)=>{
     const hash = await bcrypt.hash(password,0)
     console.log(hash)
     try {
-        await db.insert(username,hash,'null','null')
+        await db.insert(username,hash)
         res.sendStatus(200)
     } catch(err){
         console.log("catch blockk")

@@ -35,10 +35,10 @@ async function logall(){
     console.log(res);
 }
 
-async function insert(username , password_hash, session_token, expiry_time){
+async function insert(username , password_hash){
         await this.db.run(
-            "insert into user values(?,?,?,?)"
-            , username , password_hash , session_token , expiry_time
+            "insert into user values(?,?)"
+            , username , password_hash
         )
 }
 
