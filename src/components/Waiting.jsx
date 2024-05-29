@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Waiting({players}){
+export default function Waiting({players , emitStart}){
     return (
         <>
             {
@@ -8,6 +8,7 @@ export default function Waiting({players}){
                     (p) => <p>p.username</p>
                 )
             }
+            <button onClick = {emitStart}>Start the Game</button>
         </>
     )
 }

@@ -8,6 +8,7 @@ import db from "./utils/db.js"
 import bcrypt from "bcrypt";
 import uniqid from "uniqid"
 import authenticator from "./utils/auth.js";
+import gamesHandler from "./utils/game.js"
 
 dotenv.config(); // for process.env
 await db.init();
@@ -25,7 +26,6 @@ app.use(cors(
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-let games = [];
 
 const io = new Server(
         app.listen(
@@ -40,91 +40,38 @@ const io = new Server(
         }
 );
 
-function getGame(roomCode){
-    return (
-        games.find(
-            (game) => (game.roomCode == roomCode)
-        )
-    );
-}
-
-function randomCode(){
-    let code = "";
-    const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    for(let i =  0 ;i < 6 ; i++){
-        code += str[Math.floor(Math.random()*26)];
-    }
-
-    return code;
-}
-
-function roomCodeGenerator(){
-    let code = randomCode();
-    while(getGame(code)) code = randomCode();
-    return code;
-}
-
-function createGame(){
-    let game = {
-        roomCode : roomCodeGenerator() , 
-        ballA : -1,
-        ballB : -1,
-        count : 0 , 
-        scount : 0
-    };
-    games.push(game);
-    return game;
-}
-
-function joinGame(roomCode){
-    const game = getGame(roomCode);
-    game.count++;
-}
-
-app.post("/init" , 
+app.post( "/init" , 
     (req,res)=>{
-        console.log(req.body);
-        const roomCode = req.body.data?.roomCode;
-        if(roomCode == undefined || roomCode.length === 0){
-            // NO room code is given. so new room is created.
-            console.log("new game is being created");
-            const game = createGame();
-            joinGame(game.roomCode);
+        // NO room code is given. so new room is created.
+        console.log("new game is being created");
+        const game = gamesHandler.createGame();
+        res.status(200).send(
+            {
+                roomCode  : game.roomCode
+            }
+        );
+    }
+)
+
+app.post("/room_auth" ,auth.sessionAuth, (req,res) => {
+    if(req.isAuth) {
+        console.log(req.body)
+        const roomCode = req.body.roomCode
+        if(gamesHandler.userCanJoin(req.username,roomCode)) {
             res.status(200).send(
                 {
-                    roomCode  : game.roomCode
+                    username : req.username,
                 }
-            );
-        }else{
-            const gameReq = getGame(roomCode);
-            console.log(gameReq);
-            if(gameReq){
-                // Room already Exists
-
-                if(gameReq.count == 2) {
-                    //Already there are two players
-                    res.status(400).send({
-                        message : "already two players exist"
-                    })
-                }
-                else {
-                    //There is only one other
-                    joinGame(gameReq.roomCode);
-                    res.status(200).send({
-                        roomCode
-                    });
-                }
-            }
-            else{
-                //if game doesnt exist
-                res.status(400).send({
-                    message : "invalid room code"
-                });
-            }
+            )
         }
+    } else {
+        res.status(401).send(
+            {
+                message : "you must log in before playing"
+            }
+        )
     }
-);
+})
 
 app.get("/auth", auth.sessionAuth , async (req,res) => {
     if(req.isAuth) {
@@ -183,18 +130,23 @@ io.on( 'connect' ,
         socket.on(
             "init" , 
             (data , cb) =>{
-                console.log(data);
-                socket.join(data.roomCode);
+                console.log(data)
+                socket.roomCode = data.roomCode
+                socket.join(data.roomCode)
                 console.log("joined the client to room "+ data.roomCode);
                 io.to(data.roomCode).emit("hey");
-                let room = getGame(data.roomCode);
+                let room = gamesHandler.getGame(data.roomCode);
                 if(room){
-                    if(room.scount%2) cb('A');
-                    else cb('B');
-                    room.scount++;
+                    gamesHandler.joinGame(data.roomCode , data.username)
                 }
+                cb(room)
             }
-        );
+        )
+
+        socket.on('start' , () => {
+            gamesHandler.assignTeams(socket.roomCode)
+            io.to(socket.roomCode).emit('start' , gamesHandler.getGame(socket.roomCode))
+        })
 
         socket.on(
             "ball" , 

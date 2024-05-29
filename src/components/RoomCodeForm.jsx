@@ -10,23 +10,23 @@ export default function RoomCodeForm(){
 
     async function handleSubmit(e){
         e.preventDefault();
-        try{
-            //sending the backend the room code
-            const response  = await axios.post(
-                    import.meta.env.VITE_BE_URL+"/init" , 
-                    {
-                        headers : {
-                            "Access-Control-Allow-Origin": "*"
-                        },
-                        data : {
-                            roomCode
-                        }
-                    }  
-            );
-            navigate("/game/"+response.data.roomCode);
-        }catch(err){
-            alert(err.response.data.message);
+        if(roomCode.length == 0){
+            try{
+                //sending the backend the room code
+                const response  = await axios.post(
+                        import.meta.env.VITE_BE_URL+"/init" , 
+                        {
+                            headers : {
+                                "Access-Control-Allow-Origin": "*"
+                            }
+                        }  
+                );
+                navigate("/game/"+response.data.roomCode);
+            }catch(err){
+                alert(err.response.data.message);
+            }
         }
+        else navigate("/game/"+roomCode)
     }
 
     return (

@@ -16,7 +16,7 @@ export default function Room(){
     const [gameData , setGameData] = useState()
     const {roomCode} = useParams()
     const navigate = useNavigate()
-
+    console.log(gameData)
     function sendBall(value){
         socket.emit(
             'ball' ,
@@ -27,14 +27,19 @@ export default function Room(){
         )
     }
 
+    function emitStart(){
+        socket.emit('start')
+    }
+
     useEffect(
         function() {
-            function establishSocket(){
+            function establishSocket(username){
                 const temp_socket = io(import.meta.env.VITE_BE_URL + "/")
                 temp_socket.emit(
                     'init' , 
                     {
-                        roomCode 
+                        roomCode ,
+                        username
                     } , 
                     (gameData) => {
                         setGameData(gameData)
@@ -77,6 +82,11 @@ export default function Room(){
                         )
                     }
                 )
+                temp_socket.on('start' , 
+                    (data) => {
+                        setGameData(data)
+                    }
+                )
                 setSocket(temp_socket)
                 return (
                     () => temp_socket.disconnect()
@@ -84,7 +94,7 @@ export default function Room(){
             }
             async function auth(){
                 // see if user can join the room
-                const res = await axios.get(
+                const res = await axios.post(
                     import.meta.env.VITE_BE_URL+"/room_auth" , 
                     {
                         roomCode
@@ -92,7 +102,7 @@ export default function Room(){
                 )
                 //user is authrized
                 if(res.status == 200){
-                    establishSocket()
+                    establishSocket(res.data.username)
                 } else {
                     alert(res.data.message)
                     navigate("/")
@@ -108,7 +118,7 @@ export default function Room(){
         (loading && <h1>Loadinggg.....</h1>)
         ||
         (
-            (gameData.gameInProgress) ? <Game {...gameData} sendBall={sendBall}/> : <Waiting players = {gameData.players}/>
+            (gameData.gameInProgress) ? <Game {...gameData} sendBall={sendBall}/> : <Waiting players = {gameData.players} emitStart={emitStart}/>
         )
     )
 }
