@@ -37,7 +37,7 @@ async function logall(){
 
 async function insert(username , password_hash){
         await this.db.run(
-            "insert into user values(?,?)"
+            "insert into user(username,pwd_hash) values(?,?)"
             , username , password_hash
         )
 }

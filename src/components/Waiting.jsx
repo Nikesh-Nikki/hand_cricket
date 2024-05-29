@@ -5,7 +5,7 @@ export default function Waiting({players , emitStart}){
         <>
             {
                 players.map(
-                    (p) => <p>p.username</p>
+                    (p) => <p key={p.username}>{p.username}</p>
                 )
             }
             <button onClick = {emitStart}>Start the Game</button>

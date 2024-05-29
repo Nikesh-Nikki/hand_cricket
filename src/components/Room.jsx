@@ -67,9 +67,7 @@ export default function Room(){
                 )
                 temp_socket.on(
                     'join' , 
-                    (player)=>{
-                        let new_players = gameData.players;
-                        new_players.push(player)
+                    (new_players)=>{
                         setGameData(
                             (gameData) => {
                                 return (
@@ -93,18 +91,23 @@ export default function Room(){
                 )
             }
             async function auth(){
-                // see if user can join the room
-                const res = await axios.post(
-                    import.meta.env.VITE_BE_URL+"/room_auth" , 
-                    {
-                        roomCode
+                try{
+                    // see if user can join the room
+                    const res = await axios.post(
+                        import.meta.env.VITE_BE_URL+"/room_auth" , 
+                        {
+                            roomCode
+                        }
+                    )
+                    //user is authrized
+                    if(res.status == 200){
+                        establishSocket(res.data.username)
+                    } else {
+                        alert(res.data.message)
+                        navigate("/")
                     }
-                )
-                //user is authrized
-                if(res.status == 200){
-                    establishSocket(res.data.username)
-                } else {
-                    alert(res.data.message)
+                } catch (err) {
+                    alert(err.response.data.message)
                     navigate("/")
                 }
             }

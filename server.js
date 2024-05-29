@@ -63,6 +63,12 @@ app.post("/room_auth" ,auth.sessionAuth, (req,res) => {
                     username : req.username,
                 }
             )
+        } else {
+            res.status(401).send(
+                {
+                    message : "you cannot join this room"
+                }
+            )
         }
     } else {
         res.status(401).send(
@@ -89,7 +95,7 @@ app.post("/login" , async (req,res)=>{
     const {username ,password} = req.body
     const user = await db.getByUsername(username)
     console.log(user)
-    if(await bcrypt.compare(password,user.pwd_hash)){
+    if(user && await bcrypt.compare(password,user.pwd_hash)){
         console.log("access granted")
         const session_token = uniqid.process()
         res.cookie("sessionToken",session_token)
@@ -115,6 +121,7 @@ app.post( "/create_account" , async (req,res)=>{
         await db.insert(username,hash)
         res.sendStatus(200)
     } catch(err){
+        console.log(err)
         console.log("catch blockk")
         res.status(409).send(
             {
@@ -136,6 +143,7 @@ io.on( 'connect' ,
                 console.log("joined the client to room "+ data.roomCode);
                 io.to(data.roomCode).emit("hey");
                 let room = gamesHandler.getGame(data.roomCode);
+                socket.to(data.roomCode).emit('join' , room.players)
                 if(room){
                     gamesHandler.joinGame(data.roomCode , data.username)
                 }
@@ -144,8 +152,11 @@ io.on( 'connect' ,
         )
 
         socket.on('start' , () => {
+            console.log('starting the game ' + socket.roomCode)
             gamesHandler.assignTeams(socket.roomCode)
-            io.to(socket.roomCode).emit('start' , gamesHandler.getGame(socket.roomCode))
+            const game = gamesHandler.getGame(socket.roomCode)
+            game.gameInProgress = true
+            io.to(socket.roomCode).emit('start' , game)
         })
 
         socket.on(
