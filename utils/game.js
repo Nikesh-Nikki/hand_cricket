@@ -34,7 +34,8 @@ function createGame(){
         scoreB : 0 , 
         players : [],
         bPlayed : false,
-        aPlayed : false
+        aPlayed : false,
+        inningsOver : 0
     };
     this.games.push(game);
     return game;
@@ -77,9 +78,43 @@ function assignTeams(roomCode){
     }
 }
 
-
-function playBall(roomCode,username,value,cb){
+function gameOver(roomCode){
     const game = this.getGame(roomCode)
+    console.log(game.inningsOver +  ' '+ this.totalInnings)
+    if(game.inningsOver == this.totalInnings) {
+        if(game.scoreA>game.scoreB) return 'A'
+        else if(game.scoreA < game.scoreB) return 'B'
+        else return 'D'
+    } else if(game.inningsOver == this.totalInnings - 1) {
+        if(game.battingA && game.scoreA > game.scoreB) return 'A'
+        else if(!game.battingA && game.scoreB > game.scoreA) return 'B'
+    }
+}
+
+function updateGame(roomCode){
+    const game = this.getGame(roomCode)
+    if(game.ballA == game.ballB) {
+        // it means batsman is out
+        if(
+            true
+            // if all players in team are out
+        )
+        {
+            game.inningsOver ++
+            game.battingA = !game.battingA
+        }
+        else {
+            //give chance to next player in the same team
+        }
+    } else {
+        if(game.battingA) game.scoreA += game.ballA
+        else game.scoreB += game.ballB
+    }
+}
+
+function playBall(roomCode,username,value,cb,over){
+    const game = this.getGame(roomCode)
+    if(!game) return
     const player = game.players.find(
         (p) => p.username==username
     )
@@ -87,7 +122,11 @@ function playBall(roomCode,username,value,cb){
         //call function for playing
         if(player.team == 'A') game.ballA = value
         else game.ballB = value
+        this.updateGame(roomCode)
         cb()
+        const result = this.gameOver(roomCode)
+        console.log(result)
+        if(result) over(result)
         game.bPlayed = false 
         game.aPlayed = false
     }
@@ -109,5 +148,8 @@ export default {
     randomCode,
     userCanJoin,
     assignTeams,
-    playBall
+    playBall,
+    updateGame,
+    gameOver,
+    totalInnings : 2
 }

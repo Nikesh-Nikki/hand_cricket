@@ -142,11 +142,10 @@ io.on( 'connect' ,
                 socket.username = data.username
                 socket.join(data.roomCode)
                 console.log("joined the client to room "+ data.roomCode);
-                io.to(data.roomCode).emit("hey");
                 let room = gamesHandler.getGame(data.roomCode);
-                socket.to(data.roomCode).emit('join' , room.players)
                 if(room){
                     gamesHandler.joinGame(data.roomCode , data.username)
+                    socket.to(data.roomCode).emit('join' , room.players)
                 }
                 cb(room)
             }
@@ -163,14 +162,16 @@ io.on( 'connect' ,
         socket.on(
             "ball" , 
             ({value}) => {
-                console.log(socket.username+ " played "+value)
                 gamesHandler.playBall(socket.roomCode,socket.username,value,
                     () => {
-                        console.log('emitting play')
                         io.to(socket.roomCode).emit(
                             'play' , 
                             gamesHandler.getGame(socket.roomCode)
                         )
+                    } ,
+                    (result) => {
+                        console.log('game is over'+ result)
+                        io.to(socket.roomCode).emit('over',result)
                     }
                 )
             }

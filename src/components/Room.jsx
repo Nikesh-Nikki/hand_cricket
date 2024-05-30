@@ -49,7 +49,6 @@ export default function Room(){
                 temp_socket.on(
                     'play' , 
                     (gameData) => {
-                        alert(gameData.ballA + " "+gameData.ballB)
                         setGameData(gameData)
                         setTimeout(
                             () => setGameData(
@@ -70,6 +69,7 @@ export default function Room(){
                 temp_socket.on(
                     'join' , 
                     (new_players)=>{
+                        // alert(new_players)
                         setGameData(
                             (gameData) => {
                                 return (
@@ -86,6 +86,10 @@ export default function Room(){
                     (data) => {
                         setGameData(data)
                     }
+                )
+                temp_socket.on('over'
+                    ,
+                    (res)=>alert(res)
                 )
                 setSocket(temp_socket)
                 return (
