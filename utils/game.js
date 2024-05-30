@@ -120,23 +120,28 @@ function changeBowler(game){
     const currentBowler = (game.battingA) ? game.playerB : game.playerA
     const nextBowler = nextPlayer(players,currentBowler)
     if(!nextBowler){
+        console.log("no next bowler restarting cycle")
         if(game.battingA){
             game.playerB = players.find((p)=>p.team=='B').username
+            console.log(game.playerB)
         } else {
             game.playerA = players.find((p)=>p.team=='A').username
+            console.log(game.playerA)
         }
+    }else{
+        if(game.battingA) game.playerB = nextBowler
+        else game.playerA = nextBowler
     }
-    if(game.battingA) game.playerB = nextBowler
-    else game.playerA = nextBowler
 }
 
 function changeBatsman(game){
     const players = game.players;
     const currentBatsman = (game.battingA) ? game.playerA : game.playerB
     const nextBatsman = nextPlayer(players,currentBatsman)
-    if(!nextBatsman) return
+    if(!nextBatsman) return false
     if(game.battingA) game.playerA = nextBatsman
     else game.playerB = nextBatsman
+    return true
 }
 
 function resetRoom(game){
