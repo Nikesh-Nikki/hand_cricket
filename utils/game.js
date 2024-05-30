@@ -137,6 +137,10 @@ function changeBatsman(game){
     else game.playerB = nextBatsman
 }
 
+function resetRoom(game){
+    game.scoreA =game.scoreB = game.ballA = game.ballB = game.inningsOver = game.overs = game.balls = 0
+}
+
 function playBall(roomCode,username,value,cb,over){
     const game = this.getGame(roomCode)
     if(!game) return
@@ -156,10 +160,14 @@ function playBall(roomCode,username,value,cb,over){
             changeBowler(game)
         }
         cb()
-        const result = this.gameOver(roomCode)
-        if(result) over(result)
         game.bPlayed = false 
         game.aPlayed = false
+        const result = this.gameOver(roomCode)
+        if(result){
+            game.gameInProgress = false
+            over(result)
+            resetRoom(game)
+        }
     }
     else if(player.team == 'A'){
         game.ballA = value
