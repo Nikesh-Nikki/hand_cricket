@@ -153,8 +153,7 @@ io.on( 'connect' ,
 
         socket.on('start' , () => {
             console.log('starting the game ' + socket.roomCode)
-            gamesHandler.startGame(socket.roomCode)
-            io.to(socket.roomCode).emit('start' , game)
+            io.to(socket.roomCode).emit('start' , gamesHandler.startGame(socket.roomCode))
         })
 
         socket.on(

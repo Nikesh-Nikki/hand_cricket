@@ -91,9 +91,11 @@ export default function Room(){
                     (res)=>{
                         alert(res + " won")
                         setGameData(
-                            {
-                                ...gameData , 
-                                gameInProgress : false
+                            (gd) =>{
+                                return ({
+                                    ...gd , 
+                                    gameInProgress : false
+                                })
                             }
                         )
                     }

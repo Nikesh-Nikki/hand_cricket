@@ -189,6 +189,7 @@ function startGame(roomCode){
         game.playerA = game.players[1].username
     }
     game.gameInProgress = true
+    return game
 }
 
 export default {
