@@ -15,7 +15,6 @@ async function sessionAuth(req,res,next){
 function authenticator(db){
     this.db = db
     this.sessionAuth = sessionAuth.bind(this)
-    console.log(this)
 }
 
 export default authenticator;

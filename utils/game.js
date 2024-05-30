@@ -32,7 +32,9 @@ function createGame(){
         gameInProgress : false,
         scoreA : 0 , 
         scoreB : 0 , 
-        players : []
+        players : [],
+        bPlayed : false,
+        aPlayed : false
     };
     this.games.push(game);
     return game;
@@ -75,6 +77,29 @@ function assignTeams(roomCode){
     }
 }
 
+
+function playBall(roomCode,username,value,cb){
+    const game = this.getGame(roomCode)
+    const player = game.players.find(
+        (p) => p.username==username
+    )
+    if(game.bPlayed || game.aPlayed) {
+        //call function for playing
+        if(player.team == 'A') game.ballA = value
+        else game.ballB = value
+        cb()
+        game.bPlayed = false 
+        game.aPlayed = false
+    }
+    else if(player.team == 'A'){
+        game.ballA = value
+        game.aPlayed = true
+    } else {
+        game.ballB = value
+        game.bPlayed = true
+    }
+}
+
 export default {
     games : [],
     createGame,
@@ -83,5 +108,6 @@ export default {
     getGame,
     randomCode,
     userCanJoin,
-    assignTeams
+    assignTeams,
+    playBall
 }

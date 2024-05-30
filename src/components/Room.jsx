@@ -33,8 +33,8 @@ export default function Room(){
 
     useEffect(
         function() {
+            const temp_socket = io(import.meta.env.VITE_BE_URL + "/")
             function establishSocket(username){
-                const temp_socket = io(import.meta.env.VITE_BE_URL + "/")
                 temp_socket.emit(
                     'init' , 
                     {
@@ -49,6 +49,7 @@ export default function Room(){
                 temp_socket.on(
                     'play' , 
                     (gameData) => {
+                        alert(gameData.ballA + " "+gameData.ballB)
                         setGameData(gameData)
                         setTimeout(
                             () => setGameData(
@@ -61,7 +62,8 @@ export default function Room(){
                                         }
                                     )
                                 }
-                            )
+                            ) , 
+                            2000
                         )
                     }
                 )
@@ -101,7 +103,7 @@ export default function Room(){
                     )
                     //user is authrized
                     if(res.status == 200){
-                        establishSocket(res.data.username)
+                        return establishSocket(res.data.username)
                     } else {
                         alert(res.data.message)
                         navigate("/")
@@ -113,6 +115,8 @@ export default function Room(){
             }
 
             auth()
+
+            return () => temp_socket.disconnect()
         } ,
         []
     )

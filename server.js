@@ -139,6 +139,7 @@ io.on( 'connect' ,
             (data , cb) =>{
                 console.log(data)
                 socket.roomCode = data.roomCode
+                socket.username = data.username
                 socket.join(data.roomCode)
                 console.log("joined the client to room "+ data.roomCode);
                 io.to(data.roomCode).emit("hey");
@@ -161,26 +162,17 @@ io.on( 'connect' ,
 
         socket.on(
             "ball" , 
-            ({team,value,roomCode}) => {
-                console.log(`${roomCode + ' : ' + team} played value ${value}`);
-                let game = getGame(roomCode);
-                if(team == 'A'){
-                    // if player already made the move, then return
-                    if(game.ballA != -1) return;
-                    game.ballA = value;
-                } else {
-                    if(game.ballB != -1) return;
-                    game.ballB = value;
-                }
-                if(game.ballA == -1 || game.ballB == -1) return;
-                //if both players made their moves
-                io.to(roomCode).emit("play" , {
-                    ballA : game.ballA , 
-                    ballB : game.ballB
-                });
-                //resetting
-                game.ballA = -1;
-                game.ballB = -1;
+            ({value}) => {
+                console.log(socket.username+ " played "+value)
+                gamesHandler.playBall(socket.roomCode,socket.username,value,
+                    () => {
+                        console.log('emitting play')
+                        io.to(socket.roomCode).emit(
+                            'play' , 
+                            gamesHandler.getGame(socket.roomCode)
+                        )
+                    }
+                )
             }
         )
 
