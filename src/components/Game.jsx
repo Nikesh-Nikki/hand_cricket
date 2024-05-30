@@ -1,11 +1,9 @@
 import React from "react";
-import { useEffect ,  useState } from "react";
 import Panel from "./Panel";
 import SignPad from "./SignPad";
-import ScoreBoard from "./ScoreBoard";
-import { useParams } from "react-router-dom";
+import Team from "./Team";
 
-export default function Game ({socket , team , roomCode , ballA , ballB , scoreA , scoreB , battingA , sendBall}){
+export default function Game ({ roomCode , ballA , ballB , scoreA , scoreB , battingA , sendBall, players , playerA , playerB}){
 
     return (
         <>
@@ -13,7 +11,8 @@ export default function Game ({socket , team , roomCode , ballA , ballB , scoreA
             <Panel ball = {ballA}/>
             <Panel ball = {ballB}/>
             <SignPad cb = {sendBall} active={true}/>
-            <ScoreBoard scoreA={scoreA} scoreB={scoreB} battingA={battingA}/>
+            <Team team = 'A' players={players} player={playerA} score = {scoreA} battingA = {battingA}/>
+            <Team team = 'B' players={players} player={playerB} score = {scoreB} battingA = {battingA}/>
         </>
     );
 };

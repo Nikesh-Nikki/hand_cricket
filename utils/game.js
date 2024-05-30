@@ -100,6 +100,8 @@ function updateGame(roomCode){
         {
             game.inningsOver ++
             game.battingA = !game.battingA
+            game.playerB = game.players.find((p)=>p.team=='B').username
+            game.playerA = game.players.find((p)=>p.team=='A').username
         }
     } else {
         if(game.battingA) game.scoreA += game.ballA

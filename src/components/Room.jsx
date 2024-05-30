@@ -16,7 +16,7 @@ export default function Room(){
     const [gameData , setGameData] = useState()
     const {roomCode} = useParams()
     const navigate = useNavigate()
-    console.log(gameData)
+
     function sendBall(value){
         socket.emit(
             'ball' ,
@@ -42,7 +42,10 @@ export default function Room(){
                         username
                     } , 
                     (gameData) => {
-                        setGameData(gameData)
+                        setGameData({
+                            ...gameData,
+                            username
+                        })
                         setLoading(false)
                     }
                 )
@@ -83,7 +86,12 @@ export default function Room(){
                 )
                 temp_socket.on('start' , 
                     (data) => {
-                        setGameData(data)
+                        setGameData((gd) => {
+                            return {
+                                ...gd,
+                                ...data
+                            }
+                        })
                     }
                 )
                 temp_socket.on('over'
@@ -101,9 +109,6 @@ export default function Room(){
                     }
                 )
                 setSocket(temp_socket)
-                return (
-                    () => temp_socket.disconnect()
-                )
             }
             async function auth(){
                 try{
@@ -116,7 +121,7 @@ export default function Room(){
                     )
                     //user is authrized
                     if(res.status == 200){
-                        return establishSocket(res.data.username)
+                        establishSocket(res.data.username)
                     } else {
                         alert(res.data.message)
                         navigate("/")
@@ -135,10 +140,20 @@ export default function Room(){
     )
 
     return (
-        (loading && <h1>Loadinggg.....</h1>)
-        ||
-        (
-            (gameData.gameInProgress) ? <Game {...gameData} sendBall={sendBall}/> : <Waiting players = {gameData.players} emitStart={emitStart}/>
-        )
+        <>
+            {
+                (loading && <h1>Loadinggg.....</h1>)
+                ||
+                (
+                    <>
+                        <h1>{gameData.username}</h1>
+                        {
+                            (gameData.gameInProgress) ? <Game {...gameData} sendBall={sendBall}/> 
+                                : <Waiting players = {gameData.players} emitStart={emitStart}/>
+                        }
+                    </>
+                )
+            }
+        </>
     )
 }

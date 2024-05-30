@@ -159,6 +159,7 @@ io.on( 'connect' ,
         socket.on(
             "ball" , 
             ({value}) => {
+                // console.log(socket.username+" played "+value)
                 gamesHandler.playBall(socket.roomCode,socket.username,value,
                     () => {
                         io.to(socket.roomCode).emit(
