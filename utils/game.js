@@ -118,6 +118,7 @@ function playBall(roomCode,username,value,cb,over){
     const player = game.players.find(
         (p) => p.username==username
     )
+    if(!player) return
     if(game.bPlayed || game.aPlayed) {
         //call function for playing
         if(player.team == 'A') game.ballA = value
