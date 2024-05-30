@@ -153,9 +153,7 @@ io.on( 'connect' ,
 
         socket.on('start' , () => {
             console.log('starting the game ' + socket.roomCode)
-            gamesHandler.assignTeams(socket.roomCode)
-            const game = gamesHandler.getGame(socket.roomCode)
-            game.gameInProgress = true
+            gamesHandler.startGame(socket.roomCode)
             io.to(socket.roomCode).emit('start' , game)
         })
 
