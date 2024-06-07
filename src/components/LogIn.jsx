@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import '../styles/login.scss'
 
 export default function LogIn(){
 
@@ -11,7 +11,6 @@ export default function LogIn(){
         password : "" , 
         error : undefined
     });
-    const navigate = useNavigate();
     async function handleSubmit(e){
         e.preventDefault()
         try {
@@ -35,18 +34,20 @@ export default function LogIn(){
         }
     }
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                <label>username</label>
-                <input type = "text" name = "username" value={state.username} onChange = {(e)=>{setState({...state , username : e.target.value})}}></input>
-                <label>password</label>
-                <input type = "password" id = "password" name = "password" value={state.password}
-                 onChange = {(e)=>{setState({...state , password : e.target.value})}}></input>
-                 <button type = "submit">Submit</button>
-            </form>
-            <Link to = "create_account">
-                Create Account Instead
-            </Link>
-        </>
+        <div id = "login-component">
+            <div id = "login">
+                <form onSubmit={handleSubmit}>
+                    <label>Username</label>
+                    <input type = "text" name = "username" value={state.username} onChange = {(e)=>{setState({...state , username : e.target.value})}}></input>
+                    <label>Password</label>
+                    <input type = "password" id = "password" name = "password" value={state.password}
+                    onChange = {(e)=>{setState({...state , password : e.target.value})}}></input>
+                    <button type = "submit">Submit</button>
+                </form>
+                <Link to = "create_account">
+                    Create Account Instead
+                </Link>
+            </div>
+        </div>
     )
 }

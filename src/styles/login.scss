@@ -1,0 +1,19 @@
+@use 'common';
+@use 'center';
+@use 'vars';
+
+#login-component{
+    @include center.centerIt($flexDirection : column);  
+    height: 100vh;
+}
+
+#login {
+    background-color: vars.$secondaryColor;
+    width : 35vh;
+    padding : 5%;
+    border-radius: 10%;
+
+    form {
+        @extend %basicForm;
+    }
+}
