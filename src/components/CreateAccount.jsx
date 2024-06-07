@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import '../styles/login.scss'
 
 export default function CreateAccount(){
 
@@ -58,21 +59,23 @@ export default function CreateAccount(){
         }
     }
     return (
-        <>
-            {
-                (state.error) ? <p>{state.error}</p> : undefined
-            }
-            <form onSubmit={handleSubmit}>
-                <label>username</label>
-                <input type = "text" name = "username" onChange = {(e)=>{setState({...state , username : e.target.value})}}></input>
-                <label>password</label>
-                <input type = "password" id = "password" name = "password"
-                 onChange = {(e)=>{setState({...state , password : e.target.value})}}></input>
-                 <label>confirm password</label>
-                <input type = "password" id = "confirmPassword"
-                onChange = {(e)=>{setState({...state , confirmPassword : e.target.value})}}></input>
-                <button type="submit">Submit</button>
-            </form>
-        </>
+        <div id = "create-account-component">
+            <div id = "create-account">
+                {
+                    (state.error) ? <div className = "error">{state.error}</div> : undefined
+                }
+                <form onSubmit={handleSubmit}>
+                    <label>Username</label>
+                    <input type = "text" name = "username" onChange = {(e)=>{setState({...state , username : e.target.value})}}></input>
+                    <label>Password</label>
+                    <input type = "password" id = "password" name = "password"
+                    onChange = {(e)=>{setState({...state , password : e.target.value})}}></input>
+                    <label>Confirm Password</label>
+                    <input type = "password" id = "confirmPassword"
+                    onChange = {(e)=>{setState({...state , confirmPassword : e.target.value})}}></input>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
     )
 }

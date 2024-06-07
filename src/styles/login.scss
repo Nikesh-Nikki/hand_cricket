@@ -10,10 +10,28 @@
 #login {
     background-color: vars.$secondaryColor;
     width : 35vh;
-    padding : 5%;
+    padding : 3% 5%;
     border-radius: 10%;
 
     form {
         @extend %basicForm;
     }
+}
+
+#create-account-component{
+    @extend #login-component;
+}   
+
+#create-account{
+    @extend #login;
+    button {
+        margin-top: 20px;
+    }
+}
+
+.error {
+    font-size : vars.$medium;
+    color: rgb(156, 8, 8);
+    font-weight: bold;
+    margin-bottom : 30px; 
 }
