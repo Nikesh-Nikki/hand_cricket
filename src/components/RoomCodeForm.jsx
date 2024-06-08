@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import '../styles/roomCode.scss'
 
 export default function RoomCodeForm(){
     
@@ -30,10 +31,14 @@ export default function RoomCodeForm(){
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>Enter a Room code if you have..!! or else just submit enter.</label>
-            <input type="text" name = "room_code" onChange={(e)=>setRoomCode(e.target.value)}></input>
-            <button type="submit">Submit</button>
-        </form>
+        <div id = "roomcode-component">
+            <div id = "roomcode">
+                <form onSubmit={handleSubmit}>
+                    <label>Enter a Room code if you have..!! or else just hit Go.</label>
+                    <input type="text" name = "room_code" onChange={(e)=>setRoomCode(e.target.value)}></input>
+                    <button type="submit">Go..!</button>
+                </form>
+            </div>
+        </div>
     );
 }

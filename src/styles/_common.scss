@@ -27,6 +27,18 @@ body {
 	outline: inherit;
 }
 
+%greenButton {
+    @extend %defaultButton;
+    background-color: vars.$primaryColor;
+    color : white;
+    width: 75%;
+    padding: 5%;
+    transition: background-color 0.1s ease-in-out;
+    &:hover {
+        background-color: vars.$thirdColor;
+    }
+}
+
 %basicForm {
     @include center.centerIt($flexDirection : column);
 
@@ -50,15 +62,7 @@ body {
     }
 
     button {
-        @extend %defaultButton;
-        background-color: vars.$primaryColor;
-        color : white;
-        width: 75%;
-        padding: 5%;
-        transition: background-color 0.1s ease-in-out;
+        @extend %greenButton;
         margin-bottom: 10px;
-        &:hover {
-            background-color: vars.$thirdColor;
-        }
     }
 }
