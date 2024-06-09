@@ -31,7 +31,9 @@ function createGame(){
         battingA : true,
         gameInProgress : false,
         scoreA : 0 , 
-        scoreB : 0 , 
+        scoreB : 0 ,
+        wicketsA : 0,
+        wicketsB : 0, 
         players : [],
         bPlayed : false,
         aPlayed : false,
@@ -105,6 +107,8 @@ function updateGame(roomCode){
     const game = this.getGame(roomCode)
     if(game.ballA == game.ballB) {
         // it means batsman is out
+        if(game.battingA) game.wicketsA++
+        else game.wicketsB++
         if( ! this.changeBatsman(game) )
         {
             game.inningsOver ++
@@ -164,6 +168,11 @@ function playBall(roomCode,username,value,cb,over){
         (p) => p.username==username
     )
     if(!player) return
+    
+    if((player.team == 'A' && game.playerA != player.username)
+        ||
+        (player.team == 'B' && game.playerB != player.username)) return
+     
     if(game.bPlayed || game.aPlayed) {
         //call function for playing
         if(player.team == 'A') game.ballA = value
