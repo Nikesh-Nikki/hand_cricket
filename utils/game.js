@@ -39,7 +39,8 @@ function createGame(){
         aPlayed : false,
         inningsOver : 0,
         overs : 0,
-        balls : 0
+        balls : 0,
+        count : 0
     };
     this.games.push(game);
     return game;
@@ -50,7 +51,10 @@ function joinGame(roomCode , username){
     if(!game) return
     if(game.gameInProgress) {
         const player = game.players.find((p)=>p.username==username)
-        if(player) player.online = true
+        if(player) {
+            player.online = true
+            game.count++
+        }
     } else {
         if (
             game.players.find(
@@ -63,6 +67,7 @@ function joinGame(roomCode , username){
                 online : true
             }
         )
+        game.count++
     }
     console.log(game.players)
 }
@@ -224,8 +229,22 @@ function removePlayer(roomCode,username){
     const players = game.players
     const indexOfPlayer = players.map(p=>p.username).indexOf(username)
     if(indexOfPlayer == -1) return
+    game.count--
     if(game.gameInProgress) players[indexOfPlayer].online = false
     else players.splice(indexOfPlayer,1)
+    if(game.count == 0) {
+        setTimeout(
+            () => {
+                if(game.count == 0) {
+                    console.log('deleting '+game.roomCode)
+                    const index = this.games.map((g)=>g.roomCode).indexOf(roomCode)
+                    this.games.splice(index,1)
+                } else console.log('delete abort')
+            } , 
+            // giving users 60 seconds to rejoin
+            1000*60
+        )
+    }
 }
 
 export default {
