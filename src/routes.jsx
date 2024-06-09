@@ -1,6 +1,5 @@
 import React from "react";
 import Home from "./components/Home.jsx"
-import Game from "./components/Game.jsx"
 import CreateAccount from "./components/CreateAccount.jsx";
 import Room from "./components/Room.jsx";
 
