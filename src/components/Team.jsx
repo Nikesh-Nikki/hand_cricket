@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Team({players , player, team ,score , battingA}){
     return (
-        <>
+        <div className="team" id = {"team-"+team}>
             <h2>Team : {team} </h2>
             <h3>
                 {
@@ -14,15 +14,14 @@ export default function Team({players , player, team ,score , battingA}){
                     )()
                 }
             </h3>
-            <h3>{score}</h3>
             {
                 players.map(
-                    (p) => {
+                    (p , i) => {
                         if(p.team == team)
-                            return (<p key = {p.username}> {p.username + ((p.username==player)?'*':'')} </p>)
+                            return (<div key = {p.username} className={`player ${(i%2)?'odd':' '}`}> {p.username + ((p.username==player)?'*':'')} </div>)
                     }
                 )
             }
-        </>
+        </div>
     )
 }

@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function Panel({ball}){
+export default function Panel({ball,team}){
     return (
-        <p>
+        <div className="panel" id = {"panel-"+team}>
             {ball}
-        </p>
+        </div>
     );
 }

@@ -168,7 +168,7 @@ function playBall(roomCode,username,value,cb,over){
         (p) => p.username==username
     )
     if(!player) return
-    
+    console.log(username + " "+ player.team + " played "+value)
     if((player.team == 'A' && game.playerA != player.username)
         ||
         (player.team == 'B' && game.playerB != player.username)) return

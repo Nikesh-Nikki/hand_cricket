@@ -52,7 +52,14 @@ export default function Room(){
                 temp_socket.on(
                     'play' , 
                     (gameData) => {
-                        setGameData(gameData)
+                        setGameData(
+                            (gd) => {
+                                return {
+                                    ...gd , 
+                                    ...gameData
+                                }
+                            }
+                        )
                         setTimeout(
                             () => setGameData(
                                 (data) => {
