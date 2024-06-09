@@ -45,6 +45,7 @@ function createGame(){
 
 function joinGame(roomCode , username){
     const game = this.getGame(roomCode)
+    if(!game) return
     if(game.gameInProgress) {
         const player = game.players.find((p)=>p.username==username)
         if(player) player.online = true
@@ -67,6 +68,7 @@ function joinGame(roomCode , username){
 function userCanJoin( username , roomCode ){
     console.log(roomCode)
     const game = this.getGame(roomCode)
+    if(!game) return
     console.log(game)
     if(game.gameInProgress){
         const player = game.players.find(
@@ -88,6 +90,7 @@ function assignTeams(game){
 
 function gameOver(roomCode){
     const game = this.getGame(roomCode)
+    if(!game) return
     if(game.inningsOver == this.totalInnings) {
         if(game.scoreA>game.scoreB) return 'A'
         else if(game.scoreA < game.scoreB) return 'B'
@@ -193,6 +196,7 @@ function playBall(roomCode,username,value,cb,over){
 
 function startGame(roomCode){
     const game = this.getGame(roomCode)
+    if(!game) return
     this.assignTeams(game)
     if(game.players[0].team == 'A'){
         game.playerA = game.players[0].username
@@ -207,6 +211,7 @@ function startGame(roomCode){
 
 function removePlayer(roomCode,username){
     const game = this.getGame(roomCode)
+    if(!game) return
     const players = game.players
     const indexOfPlayer = players.map(p=>p.username).indexOf(username)
     if(indexOfPlayer == -1) return
