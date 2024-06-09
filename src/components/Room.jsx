@@ -146,10 +146,9 @@ export default function Room(){
                 ||
                 (
                     <>
-                        <h1>{gameData.username}</h1>
                         {
                             (gameData.gameInProgress) ? <Game {...gameData} sendBall={sendBall}/> 
-                                : <Waiting players = {gameData.players} emitStart={emitStart}/>
+                                : <Waiting players = {gameData.players} roomCode = {roomCode} emitStart={emitStart}/>
                         }
                     </>
                 )

@@ -30,8 +30,7 @@ body {
 %greenButton {
     @extend %defaultButton;
     background-color: vars.$primaryColor;
-    color : white;
-    width: 75%;
+    color : vars.$fontColor;
     padding: 5%;
     transition: background-color 0.1s ease-in-out;
     &:hover {
