@@ -45,17 +45,23 @@ function createGame(){
 
 function joinGame(roomCode , username){
     const game = this.getGame(roomCode)
-    if(game.gameInProgress) return
-    if (
-        game.players.find(
-            (p) => (p.username == username)
+    if(game.gameInProgress) {
+        const player = game.players.find((p)=>p.username==username)
+        if(player) player.online = true
+    } else {
+        if (
+            game.players.find(
+                (p) => (p.username == username)
+            )
+        ) return
+        game.players.push(
+            { 
+                username : username ,
+                online : true
+            }
         )
-    ) return
-    game.players.push(
-        { 
-            username : username
-        }
-    )
+    }
+    console.log(game.players)
 }
 
 function userCanJoin( username , roomCode ){
@@ -66,7 +72,7 @@ function userCanJoin( username , roomCode ){
         const player = game.players.find(
             (p) => (p.username == username)
         )
-        if(player) return true
+        if(player && !player.online) return true
         else return false
     } else {
         return true
@@ -199,6 +205,15 @@ function startGame(roomCode){
     return game
 }
 
+function removePlayer(roomCode,username){
+    const game = this.getGame(roomCode)
+    const players = game.players
+    const indexOfPlayer = players.map(p=>p.username).indexOf(username)
+    if(indexOfPlayer == -1) return
+    if(game.gameInProgress) players[indexOfPlayer].online = false
+    else players.splice(indexOfPlayer,1)
+}
+
 export default {
     games : [],
     createGame,
@@ -215,5 +230,6 @@ export default {
     changeBatsman,
     changeBowler,
     nextPlayer,
+    removePlayer,
     totalInnings : 2
 }

@@ -145,7 +145,7 @@ io.on( 'connect' ,
                 let room = gamesHandler.getGame(data.roomCode);
                 if(room){
                     gamesHandler.joinGame(data.roomCode , data.username)
-                    socket.to(data.roomCode).emit('join' , room.players)
+                    socket.to(data.roomCode).emit('play' , room)
                 }
                 cb(room)
             }
@@ -159,7 +159,6 @@ io.on( 'connect' ,
         socket.on(
             "ball" , 
             ({value}) => {
-                // console.log(socket.username+" played "+value)
                 gamesHandler.playBall(socket.roomCode,socket.username,value,
                     () => {
                         io.to(socket.roomCode).emit(
@@ -178,6 +177,8 @@ io.on( 'connect' ,
         socket.on(
             "disconnect" ,
             ()=>{
+                gamesHandler.removePlayer(socket.roomCode,socket.username)
+                socket.to(socket.roomCode).emit('play',gamesHandler.getGame(socket.roomCode))
                 console.log('disconnected');
             }
         )

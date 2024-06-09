@@ -69,21 +69,7 @@ export default function Room(){
                         )
                     }
                 )
-                temp_socket.on(
-                    'join' , 
-                    (new_players)=>{
-                        setGameData(
-                            (gameData) => {
-                                return (
-                                    {
-                                        ...gameData , 
-                                        players : new_players
-                                    }
-                                )
-                            }
-                        )
-                    }
-                )
+                
                 temp_socket.on('start' , 
                     (data) => {
                         setGameData((gd) => {
