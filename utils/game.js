@@ -163,7 +163,24 @@ function changeBatsman(game){
 }
 
 function resetRoom(game){
-    game.scoreA =game.scoreB = game.ballA = game.ballB = game.inningsOver = game.overs = game.balls = 0
+    game = {
+        ...game, 
+        ballA : 0,
+        ballB : 0,
+        battingA : true,
+        gameInProgress : false,
+        scoreA : 0 , 
+        scoreB : 0 ,
+        wicketsA : 0,
+        wicketsB : 0, 
+        bPlayed : false,
+        aPlayed : false,
+        inningsOver : 0,
+        overs : 0,
+        balls : 0,
+        count : 0
+    }
+
 }
 
 function playBall(roomCode,username,value,cb,over){
