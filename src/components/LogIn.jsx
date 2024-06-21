@@ -39,7 +39,17 @@ export default function LogIn(){
                 })
             }
         } catch(err){
-            console.log(err)
+            let errorMessage
+                if(err.response === undefined) errorMessage = "Something Went Wrong..! Can't reach server :("
+                else errorMessage = err.response.data.message
+                setState(
+                    {
+                        username : "",
+                        password : "",
+                        confirmPassword : "",
+                        error : errorMessage
+                    }
+                )
         }
     }
     return (

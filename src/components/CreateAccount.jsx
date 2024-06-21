@@ -48,12 +48,15 @@ export default function CreateAccount(){
                     )
                 }
             } catch(err) {
+                let errorMessage
+                if(err.response === undefined) errorMessage = "Something Went Wrong..! Can't reach server :("
+                else errorMessage = err.response.data.message
                 setState(
                     {
                         username : "",
                         password : "",
                         confirmPassword : "",
-                        error : err.response.data.message
+                        error : errorMessage
                     }
                 )
             }
