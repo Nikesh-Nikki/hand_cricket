@@ -13,6 +13,15 @@ export default function LogIn(){
     });
     async function handleSubmit(e){
         e.preventDefault()
+        if(!state.username.length || !state.password.length) {
+            setState(
+                {
+                    ...state , 
+                    error : "username and password must not be empty"
+                }
+            )
+            return
+        } 
         try {
             const response = await axios.post(
                 import.meta.env.VITE_BE_URL + "/login" , 
@@ -35,6 +44,7 @@ export default function LogIn(){
     }
     return (
         <div id = "login-component">
+            <div className="error">{state.error}</div>
             <div id = "login">
                 <form onSubmit={handleSubmit}>
                     <label>Username</label>

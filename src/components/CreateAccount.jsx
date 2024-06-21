@@ -18,6 +18,14 @@ export default function CreateAccount(){
 
     async function handleSubmit(e){
         e.preventDefault()
+        if(state.username.length === 0 || state.password.length === 0) {
+            setState(
+                {
+                    ...state , 
+                    error : "username and password cannot be empty"
+                }
+            )
+        }
         if(state.password == state.confirmPassword){
             try {
                 const response = await axios.post(
@@ -60,10 +68,10 @@ export default function CreateAccount(){
     }
     return (
         <div id = "create-account-component">
+            {
+                (state.error) ? <div className = "error">{state.error}</div> : undefined
+            }
             <div id = "create-account">
-                {
-                    (state.error) ? <div className = "error">{state.error}</div> : undefined
-                }
                 <form onSubmit={handleSubmit}>
                     <label>Username</label>
                     <input type = "text" name = "username" onChange = {(e)=>{setState({...state , username : e.target.value})}}></input>
