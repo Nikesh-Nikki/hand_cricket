@@ -211,6 +211,7 @@ function playBall(roomCode,username,value,cb,over){
 function startGame(roomCode){
     const game = this.getGame(roomCode)
     if(!game) return
+    if(game.count == 1) return
     this.assignTeams(game)
     if(game.players[0].team == 'A'){
         game.playerA = game.players[0].username

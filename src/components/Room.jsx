@@ -28,7 +28,8 @@ export default function Room(){
     }
 
     function emitStart(){
-        socket.emit('start')
+        if(gameData.count == 1) alert('Atleast 2 players should be in room')
+        else socket.emit('start')
     }
 
     useEffect(
