@@ -10,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 
 axios.defaults.withCredentials = true
 
+function getSessionToken(){
+    return document.cookie.match(/(?<=sessionToken=)\w+/g)[0];
+}
+
+
 export default function Room(){
     const [socket , setSocket] = useState()
     const [loading , setLoading] = useState(true)
@@ -40,7 +45,7 @@ export default function Room(){
                     'init' , 
                     {
                         roomCode ,
-                        username
+                        sessionToken : getSessionToken()
                     } , 
                     (gameData) => {
                         setGameData({
@@ -88,6 +93,18 @@ export default function Room(){
                         })
                     }
                 )
+
+                temp_socket.on('join' , (players)=>{
+                    setGameData( (gd)=>{
+                        return {
+                            ...gd,
+                            players,
+                            count : players.length
+                        }
+                    }
+                    )
+                })
+
                 temp_socket.on('over'
                     ,
                     (res)=>{

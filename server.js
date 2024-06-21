@@ -136,18 +136,29 @@ io.on( 'connect' ,
         console.log("connect ayyaadu");
         socket.on(
             "init" , 
-            (data , cb) =>{
-                console.log(data)
+            async (data , cb) =>{
+                const sessionToken = data.sessionToken
+                const user = await db.getByToken(sessionToken)
+
+                if(!user) return
+                if(!gamesHandler.userCanJoin(user.username,data.roomCode)) return
+
                 socket.roomCode = data.roomCode
-                socket.username = data.username
+                socket.username = user.username
                 socket.join(data.roomCode)
                 console.log("joined the client to room "+ data.roomCode);
                 let room = gamesHandler.getGame(data.roomCode);
                 if(room){
-                    gamesHandler.joinGame(data.roomCode , data.username)
-                    socket.to(data.roomCode).emit('play' , room)
+                    gamesHandler.joinGame(data.roomCode , user.username)
+                    socket.to(data.roomCode).emit('join' , room.players)
+                    cb(
+                        {
+                            ...room,
+                            ballA : 0,
+                            ballB : 0
+                        }
+                    )
                 }
-                cb(room)
             }
         )
 
@@ -178,7 +189,7 @@ io.on( 'connect' ,
             "disconnect" ,
             ()=>{
                 gamesHandler.removePlayer(socket.roomCode,socket.username)
-                socket.to(socket.roomCode).emit('play',gamesHandler.getGame(socket.roomCode))
+                socket.to(socket.roomCode).emit('join',gamesHandler.getGame(socket.roomCode)?.players)
                 console.log('disconnected');
             }
         )

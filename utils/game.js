@@ -163,24 +163,19 @@ function changeBatsman(game){
 }
 
 function resetRoom(game){
-    game = {
-        ...game, 
-        ballA : 0,
-        ballB : 0,
-        battingA : true,
-        gameInProgress : false,
-        scoreA : 0 , 
-        scoreB : 0 ,
-        wicketsA : 0,
-        wicketsB : 0, 
-        bPlayed : false,
-        aPlayed : false,
-        inningsOver : 0,
-        overs : 0,
-        balls : 0,
-        count : 0
-    }
-
+    game.ballA = 0;
+    game.ballB = 0;
+    game.battingA = true;
+    game.gameInProgress = false;
+    game.scoreA = 0 ; 
+    game.scoreB = 0 ;
+    game.wicketsA = 0;
+    game.wicketsB = 0; 
+    game.bPlayed = false;
+    game.aPlayed = false;
+    game.inningsOver = 0;
+    game.overs = 0;
+    game.balls = 0
 }
 
 function playBall(roomCode,username,value,cb,over){
@@ -194,6 +189,9 @@ function playBall(roomCode,username,value,cb,over){
     if((player.team == 'A' && game.playerA != player.username)
         ||
         (player.team == 'B' && game.playerB != player.username)) return
+    
+    if((game.aPlayed && player.team=='A')
+        ||(game.bPlayed && player.team == 'B')) return
      
     if(game.bPlayed || game.aPlayed) {
         //call function for playing
@@ -211,9 +209,8 @@ function playBall(roomCode,username,value,cb,over){
         game.aPlayed = false
         const result = this.gameOver(roomCode)
         if(result){
-            game.gameInProgress = false
-            over(result)
             resetRoom(game)
+            over(result)
         }
     }
     else if(player.team == 'A'){
