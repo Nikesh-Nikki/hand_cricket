@@ -13,8 +13,8 @@ export default function Game ({roomCode , ballA , ballB , scoreA , scoreB , batt
             <Panel ball = {ballA} team = 'A'/>
             <Panel ball = {ballB} team = 'B'/>
             <SignPad cb = {sendBall} active={(username == playerA || username == playerB)}/>
-            <Team team = 'A' players={players} player={playerA} score = {scoreA} battingA = {battingA}/>
-            <Team team = 'B' players={players} player={playerB} score = {scoreB} battingA = {battingA}/>
+            <Team team = 'A' username = {username} players={players} player={playerA} score = {scoreA} battingA = {battingA}/>
+            <Team team = 'B' username = {username} players={players} player={playerB} score = {scoreB} battingA = {battingA}/>
         </div>
     );
 };
