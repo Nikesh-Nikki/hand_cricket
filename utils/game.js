@@ -77,13 +77,14 @@ function userCanJoin( username , roomCode ){
     const game = this.getGame(roomCode)
     if(!game) return
     console.log(game)
+    const player = game.players.find(
+        (p) => (p.username == username)
+    )
     if(game.gameInProgress){
-        const player = game.players.find(
-            (p) => (p.username == username)
-        )
         if(player && !player.online) return true
         else return false
     } else {
+        if(player) return false
         return true
     }
 }
